@@ -1,0 +1,24 @@
+{
+  "name": "nuchallenge",
+  "version": "1.0.0",
+  "description": "Nubank Challenge",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/narukaioh/nuchallenge.git"
+  },
+  "keywords": [
+    "NU",
+    "Challenge",
+    "Javascript"
+  ],
+  "author": "Ju Dantas",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/narukaioh/nuchallenge/issues"
+  },
+  "homepage": "https://github.com/narukaioh/nuchallenge#readme"
+}
