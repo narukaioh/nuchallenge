@@ -1,4 +1,4 @@
-const { authorize } = require('../../src/account')
+const { authorize } = require('../../src')
 
 describe('Transaction rules', () => {
   let initialState;
@@ -24,5 +24,9 @@ describe('Transaction rules', () => {
     ]
     initialState = authorize(initialState, operations)
     expect(initialState.history).toStrictEqual(expected)
+  })
+
+  it('', () => {
+
   })
 })

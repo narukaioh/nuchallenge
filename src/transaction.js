@@ -1,14 +1,9 @@
-const { isEmpty } = require('lodash')
+const { addViolation } = require('./utils')
+const { hasAccountRegistred } = require('./account')
 
 const validTransaction = (state, operation) => {
-  const violations = []
-  if (isEmpty(state.account)) {
-    violations.push('account-not-initialized')
-    state.history.push({
-      account: state.account,
-      violations
-    })
-    return state
+  if (hasAccountRegistred(state)) {
+    return addViolation(state, 'account-not-initialized')
   }
 
   return {

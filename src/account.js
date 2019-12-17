@@ -1,17 +1,12 @@
 const { isEmpty } = require('lodash')
-const { validTransaction } = require('./transaction')
-const getOperation = operation => Object.keys(operation).shift()
+const { addViolation } = require('./utils')
+
+const hasAccountRegistred = state => isEmpty(state.account)
 
 const registerAccount = (state, operation) => {
   const violations = []
-  if (!isEmpty(state.account)) {
-    violations.push('account-already-initialized')
-    state.history.push({
-      account: state.account,
-      violations
-    })
-
-    return state
+  if (!hasAccountRegistred(state)) {
+    return addViolation(state, 'account-already-initialized')
   }
 
   state.account = operation.account
@@ -23,24 +18,7 @@ const registerAccount = (state, operation) => {
   return state
 }
 
-const authorize = (state, operations) => {
-  operations.forEach(operation => {
-
-    switch (getOperation(operation)) {
-      case 'account': {
-        state = registerAccount(state, operation)
-        break;
-      }
-      case 'transaction': {
-        state = validTransaction(state, operation)
-        break;
-      }
-    }
-  })
-
-  return state
-}
-
 module.exports = {
-  authorize
+  registerAccount,
+  hasAccountRegistred
 }
