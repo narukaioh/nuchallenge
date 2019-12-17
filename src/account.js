@@ -1,6 +1,6 @@
 const { isEmpty } = require('lodash')
-
-const getOperation = operation => Object.keys(operation).shift().toUpperCase()
+const { validTransaction } = require('./transaction')
+const getOperation = operation => Object.keys(operation).shift()
 
 const registerAccount = (state, operation) => {
   const violations = []
@@ -25,13 +25,14 @@ const registerAccount = (state, operation) => {
 
 const authorize = (state, operations) => {
   operations.forEach(operation => {
+
     switch (getOperation(operation)) {
-      case 'ACCOUNT': {
+      case 'account': {
         state = registerAccount(state, operation)
         break;
       }
-      case 'TRANSACTION': {
-        state = validTrasaction(state, operation)
+      case 'transaction': {
+        state = validTransaction(state, operation)
         break;
       }
     }
