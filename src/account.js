@@ -1,9 +1,8 @@
-const { isEmpty } = require('lodash')
-const { addViolation } = require('./utils')
+const { addViolation, isEmpty } = require('./utils')
 
 const hasAccountRegistred = state => !isEmpty(state.account)
 
-const isAccountActive = state => state.account['active-card']
+const hasAccountActive = state => state.account['active-card']
 
 const hasLimit = (state, operation) => state.account['available-limit'] > operation.transaction.amount
 
@@ -25,6 +24,6 @@ const registerAccount = (state, operation) => {
 module.exports = {
   registerAccount,
   hasAccountRegistred,
-  isAccountActive,
+  hasAccountActive,
   hasLimit
 }

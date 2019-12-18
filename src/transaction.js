@@ -1,12 +1,12 @@
 const { addViolation } = require('./utils')
-const { hasAccountRegistred, isAccountActive, hasLimit } = require('./account')
+const { hasAccountRegistred, hasAccountActive, hasLimit } = require('./account')
 
 const validTransaction = (state, operation) => {
   if (!hasAccountRegistred(state)) {
     return addViolation(state, 'account-not-initialized')
   }
 
-  if (!isAccountActive(state)) {
+  if (!hasAccountActive(state)) {
     return addViolation(state, 'card-not-active')
   }
 
