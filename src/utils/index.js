@@ -12,11 +12,11 @@ const addViolation = (state, violationId) => {
 }
 
 const isEmpty = object => {
-  for(var key in object) {
+  for(const key in object) {
       if(object.hasOwnProperty(key))
-          return false;
+          return false
   }
-  return true;
+  return true
 }
 
 const getOperation = operation => Object.keys(operation).shift()

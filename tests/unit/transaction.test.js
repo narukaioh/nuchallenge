@@ -1,4 +1,4 @@
-const { authorize } = require('../../src')
+const { authorize, transactionWithExceptions } = require('../../src')
 
 describe('Transaction rules', () => {
   let initialState;
@@ -46,7 +46,7 @@ describe('Transaction rules', () => {
     const op = [
       { "account": {"active-card": true, "available-limit": 120 } },
       { "transaction": { "merchant": "Burger King", "amount": 20, "time": "2019-02-13T10:00:00.000Z" } },
-      { "transaction": { "merchant": "Burger King", "amount": 180, "time": "2019-02-13T10:00:00.000Z" } },
+      { "transaction": { "merchant": "McDonald", "amount": 180, "time": "2019-02-09T10:00:00.000Z" } },
     ]
 
     const expected = [
@@ -57,5 +57,18 @@ describe('Transaction rules', () => {
 
     initialState = authorize(initialState, op)
     expect(initialState.history).toStrictEqual(expected)
+  })
+
+  it('Nao deve ter mais de 3 transacoes em menos de 2 minutos', () => {
+    const op = [
+      { "transaction": { "merchant": "Burger King", "amount": 20, "time": "2019-02-13T10:00:45.000Z" } },
+      { "transaction": { "merchant": "McDonald", "amount": 180, "time": "2019-02-13T10:01:00.000Z" } },
+      { "transaction": { "merchant": "McDonald", "amount": 180, "time": "2019-02-13T10:01:30.000Z" } },
+      { "transaction": { "merchant": "McDonald", "amount": 180, "time": "2019-02-13T10:00:20.000Z" } },
+      { "transaction": { "merchant": "McDonald", "amount": 180, "time": "2019-02-13T10:05:00.000Z" } },
+      { "transaction": { "merchant": "McDonald", "amount": 180, "time": "2019-02-13T10:06:00.000Z" } },
+    ]
+
+    transactionWithExceptions(op)
   })
 })
