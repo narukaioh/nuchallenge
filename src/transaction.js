@@ -1,15 +1,26 @@
 const { addViolation } = require('./utils')
-const { hasAccountRegistred } = require('./account')
+const { hasAccountRegistred, isAccountActive, hasLimit } = require('./account')
 
 const validTransaction = (state, operation) => {
-  if (hasAccountRegistred(state)) {
+  if (!hasAccountRegistred(state)) {
     return addViolation(state, 'account-not-initialized')
   }
 
-  return {
-    account: {},
-    history: []
+  if (!isAccountActive(state)) {
+    return addViolation(state, 'card-not-active')
   }
+
+  if (!hasLimit(state, operation)) {
+    return addViolation(state, 'insufficient-limit')
+  }
+
+  state.account['available-limit'] -= operation.transaction.amount
+  state.history.push({
+    account: { ...state.account },
+    violations: []
+  })
+
+  return state
 }
 
 module.exports = {
