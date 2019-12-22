@@ -7,10 +7,6 @@
     "test": "jest --verbose --coverage",
     "start": "node src/index.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/narukaioh/nuchallenge.git"
-  },
   "keywords": [
     "NU",
     "Challenge",
@@ -18,15 +14,8 @@
   ],
   "author": "Ju Dantas",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/narukaioh/nuchallenge/issues"
-  },
-  "homepage": "https://github.com/narukaioh/nuchallenge#readme",
   "devDependencies": {
     "jest": "^24.9.0"
   },
-  "dependencies": {
-    "lodash": "^4.17.15",
-    "moment": "^2.24.0"
-  }
+  "dependencies": {}
 }
