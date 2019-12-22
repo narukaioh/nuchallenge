@@ -1,3 +1,4 @@
+const { readFileSync } = require("fs")
 const linesToJSList = lines => lines.split("\n").map(line => JSON.parse(line))
 
 const addViolation = (state, violationId) => {
@@ -21,9 +22,19 @@ const isEmpty = object => {
 
 const getOperation = operation => Object.keys(operation).shift()
 
+const groupBy = (array, callback ) => {
+  return array.reduce((acc, item) => {
+    var list = callback(item)
+    acc[list] = acc[list] || []
+    acc[list].push(item)
+    return acc
+  }, {})
+}
+
 module.exports = {
   linesToJSList,
   addViolation,
   getOperation,
-  isEmpty
+  isEmpty,
+  groupBy
 }

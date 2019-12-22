@@ -1,4 +1,4 @@
-const { authorize, transactionWithExceptions } = require('../../src')
+const { authorize, transactionWithExceptions } = require('../../src/authorize')
 
 describe('Transaction rules', () => {
   let initialState;
@@ -61,12 +61,15 @@ describe('Transaction rules', () => {
 
   it('Nao deve ter mais de 3 transacoes em menos de 2 minutos', () => {
     const op = [
-      { "transaction": { "merchant": "Burger King", "amount": 20, "time": "2019-02-13T10:00:45.000Z" } },
-      { "transaction": { "merchant": "McDonald", "amount": 180, "time": "2019-02-13T10:01:00.000Z" } },
-      { "transaction": { "merchant": "McDonald", "amount": 180, "time": "2019-02-13T10:01:30.000Z" } },
-      { "transaction": { "merchant": "McDonald", "amount": 180, "time": "2019-02-13T10:00:20.000Z" } },
-      { "transaction": { "merchant": "McDonald", "amount": 180, "time": "2019-02-13T10:05:00.000Z" } },
-      { "transaction": { "merchant": "McDonald", "amount": 180, "time": "2019-02-13T10:06:00.000Z" } },
+      { "transaction": { "merchant": "a", "amount": 180, "time": "2019-02-13T10:01:36.000Z" } },
+      { "transaction": { "merchant": "b", "amount": 180, "time": "2019-02-13T10:01:35.000Z" } },
+      { "transaction": { "merchant": "c", "amount": 180, "time": "2019-02-13T10:02:15.000Z" } },
+      { "transaction": { "merchant": "d", "amount": 180, "time": "2019-02-13T10:02:00.000Z" } },
+      { "transaction": { "merchant": "f", "amount": 180, "time": "2019-02-13T10:02:00.000Z" } },
+      { "transaction": { "merchant": "f", "amount": 180, "time": "2019-02-13T10:02:01.000Z" } },
+      { "transaction": { "merchant": "f", "amount": 180, "time": "2019-02-14T10:04:35.000Z" } },
+      { "transaction": { "merchant": "f", "amount": 180, "time": "2019-02-13T10:09:40.000Z" } },
+      { "transaction": { "merchant": "g", "amount": 180, "time": "2019-02-13T10:06:00.000Z" } },
     ]
 
     transactionWithExceptions(op)

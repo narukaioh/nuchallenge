@@ -1,5 +1,5 @@
 
-const { authorize } = require("../../src")
+const { authorize } = require("../../src/authorize")
 
 describe('Account Create rules', () => {
 

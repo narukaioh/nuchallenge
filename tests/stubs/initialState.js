@@ -1,4 +1,4 @@
-module.exports = {
+]module.exports = {
     account: {},
-    operations: []
+    history: []
 }
