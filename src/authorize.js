@@ -11,8 +11,8 @@ const transactionWithExceptions = (operations) => {
     .sort(byDate)
 
   let groupTime = null
-  const result = groupBy(sortedDate, d => {
-    const time = new Date(d.transaction.time)
+  const result = groupBy(sortedDate, operation => {
+    const time = new Date(operation.transaction.time)
     if (!groupTime) groupTime = new Date(time.getTime() + 2 * 60000)
     return time - groupTime <= 120000 ? groupTime : groupTime = time
   });
