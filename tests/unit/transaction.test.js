@@ -1,4 +1,5 @@
 const { authorize, transactionWithExceptions } = require('../../src/authorize')
+const { findOperation } = require('../../src/utils')
 
 describe('Transaction rules', () => {
   let initialState;
@@ -7,7 +8,8 @@ describe('Transaction rules', () => {
   beforeEach(() => {
     initialState = {
       account: {},
-      history: []
+      history: [],
+      forbidden: []
     }
 
     operations = [
@@ -16,6 +18,7 @@ describe('Transaction rules', () => {
     ]
 
   })
+
   // No transaction should be accepted without a properly initialized account: `account-not-initialized
   it('Nao deve aceitar a transacao se a conta nao foi inicializada: `account-not-initialized`', () => {
     const expected = [
@@ -60,18 +63,54 @@ describe('Transaction rules', () => {
   })
 
   it('Nao deve ter mais de 3 transacoes em menos de 2 minutos', () => {
-    const op = [
+    const ops = [
+      { account: {"active-card": true, "available-limit": 120 }, violations: []},
       { "transaction": { "merchant": "a", "amount": 180, "time": "2019-02-13T10:01:36.000Z" } },
-      { "transaction": { "merchant": "b", "amount": 180, "time": "2019-02-13T10:01:35.000Z" } },
-      { "transaction": { "merchant": "c", "amount": 180, "time": "2019-02-13T10:02:15.000Z" } },
       { "transaction": { "merchant": "d", "amount": 180, "time": "2019-02-13T10:02:00.000Z" } },
-      { "transaction": { "merchant": "f", "amount": 180, "time": "2019-02-13T10:02:00.000Z" } },
-      { "transaction": { "merchant": "f", "amount": 180, "time": "2019-02-13T10:02:01.000Z" } },
-      { "transaction": { "merchant": "f", "amount": 180, "time": "2019-02-14T10:04:35.000Z" } },
+      { "transaction": { "merchant": "f", "amount": 180, "time": "2019-02-13T10:02:06.000Z" } },
+      { "transaction": { "merchant": "f", "amount":  30, "time": "2019-02-14T10:04:35.000Z" } },
+      { "transaction": { "merchant": "c", "amount": 180, "time": "2019-02-13T10:02:15.000Z" } },
       { "transaction": { "merchant": "f", "amount": 180, "time": "2019-02-13T10:09:40.000Z" } },
+      { "transaction": { "merchant": "b", "amount": 180, "time": "2019-02-13T10:01:35.000Z" } },
       { "transaction": { "merchant": "g", "amount": 180, "time": "2019-02-13T10:06:00.000Z" } },
+      { "transaction": { "merchant": "f", "amount": 180, "time": "2019-02-13T10:02:01.000Z" } },
     ]
 
-    transactionWithExceptions(op)
+    const expected = [
+      { account: {"active-card": true, "available-limit": 120 }, violations: []},
+      { account: {"active-card": true, "available-limit": 120 }, violations: ['high-frequency-small-interval']},
+      { account: {"active-card": true, "available-limit": 120 }, violations: ['high-frequency-small-interval']},
+      { account: {"active-card": true, "available-limit": 120 }, violations: ['high-frequency-small-interval']},
+      { account: {"active-card": true, "available-limit":  90 }, violations: ['insufficient-limit']},
+      { account: {"active-card": true, "available-limit":  90 }, violations: ['high-frequency-small-interval']},
+      { account: {"active-card": true, "available-limit":  90 }, violations: ['insufficient-limit']},
+      { account: {"active-card": true, "available-limit":  90 }, violations: ['high-frequency-small-interval']},
+      { account: {"active-card": true, "available-limit":  90 }, violations: ['insufficient-limit']},
+      { account: {"active-card": true, "available-limit":  90 }, violations: ['high-frequency-small-interval']}
+    ]
+
+    console.log(initialState)
+    initialState = authorize(initialState, ops)
+    console.log(initialState.history)
+    expect(initialState.history).toBe(expected)
+
+  })
+
+  it('Deve encontrar uma transação dentro da lista de transações proibidas', () => {
+    initialState.forbidden = {
+      'Wed Feb 13 2019 08:03:35 GMT-0200 (Brasilia Summer Time)': [
+        { transaction: { "merchant": "a", "amount": 180, "time": "2019-02-13T10:01:36.000Z" } },
+        { transaction: { "merchant": "a", "amount": 180, "time": "2019-02-13T10:01:37.000Z" } },
+        { transaction: { "merchant": "a", "amount": 180, "time": "2019-02-13T10:01:38.000Z" } },
+        { transaction: { "merchant": "a", "amount": 180, "time": "2019-02-13T10:01:39.000Z" } },
+      ]
+    }
+
+    const operation = { transaction: { "merchant": "a", "amount": 180, "time": "2019-02-13T10:01:36.000Z" } }
+
+    const result = findOperation(initialState.forbidden, operation)
+
+    expect(result).toBe(true)
+
   })
 })

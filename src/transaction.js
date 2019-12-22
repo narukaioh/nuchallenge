@@ -1,7 +1,14 @@
-const { addViolation } = require('./utils')
+const { addViolation, findOperation } = require('./utils')
 const { hasAccountRegistred, hasAccountActive, hasLimit } = require('./account')
 
+const hasHighFrequency = (state, operation) => findOperation(state.forbidden, operation)
+
 const validTransaction = (state, operation) => {
+
+  if (hasHighFrequency(state, operation)) {
+    return addViolation(state, 'high-frequency-small-interval')
+  }
+
   if (!hasAccountRegistred(state)) {
     return addViolation(state, 'account-not-initialized')
   }

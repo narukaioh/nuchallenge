@@ -1,4 +1,4 @@
-const { linesToJSList } = require('../../../src/utils')
+const { createOperationList } = require('../../../src/utils')
 
 describe('Utils', () => {
 
@@ -8,7 +8,7 @@ describe('Utils', () => {
              { "b": 2 }
              { "c": 3 }`
 
-        const result = linesToJSList(string)
+        const result = createOperationList(string)
         expect(result).toStrictEqual([ { a: 1 }, { b: 2 }, { c: 3 } ] )
     })
 })

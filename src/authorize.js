@@ -4,20 +4,21 @@ const { getOperation, groupBy } = require('./utils')
 
 const byDate = (a, b) => new Date(a.transaction.time) - new Date(b.transaction.time)
 
-const transactionWithExceptions = (operations) => {
+const transactionWithExceptions = (state, operations) => {
+  const newOperations = [...operations]
 
-  const sortedDate = operations
+  const sortedDate = newOperations
     .filter(operation => operation.transaction)
     .sort(byDate)
 
   let groupTime = null
-  const result = groupBy(sortedDate, operation => {
+  state.forbidden = groupBy(sortedDate, operation => {
     const time = new Date(operation.transaction.time)
     if (!groupTime) groupTime = new Date(time.getTime() + 2 * 60000)
     return time - groupTime <= 120000 ? groupTime : groupTime = time
   });
-
-  console.log(result);
+  
+  return state
 }
 
 const authorize = (state, operations) => {
@@ -30,6 +31,7 @@ const authorize = (state, operations) => {
         break;
       }
       case 'transaction': {
+        state = transactionWithExceptions(state, operations)
         state = validTransaction(state, operation)
         break;
       }
