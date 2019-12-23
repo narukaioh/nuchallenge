@@ -4,7 +4,7 @@ const createOperationList = lines => lines.split("\n").map(line => JSON.parse(li
 const addViolation = (state, violationId) => {
   const violations = []
   violations.push(violationId)
-  state.history.push({
+  state.operationsHistoric.push({
     account: { ...state.account},
     violations
   })

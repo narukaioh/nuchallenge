@@ -9,7 +9,7 @@ describe('Transaction rules', () => {
   beforeEach(() => {
     initialState = {
       account: {},
-      history: [],
+      operationsHistoric: [],
       forbidden: [],
       operations: []
     }
@@ -27,14 +27,14 @@ describe('Transaction rules', () => {
       { account: { "active-card": true, "available-limit": 100 }, violations: []}
     ]
     initialState = authorize(initialState, operations)
-    expect(initialState.history).toStrictEqual(expected)
+    expect(initialState.operationsHistoric).toStrictEqual(expected)
   })
 
   it('Nao deve aceitar a transacao se a conta nao estiver ativa: `card-not-active`', () => {
     
     let state = {
       account: { "active-card": false, "available-limit": 300 },
-      history: []
+      operationsHistoric: []
     }
 
     const expected = [
@@ -42,7 +42,7 @@ describe('Transaction rules', () => {
       { account: {"active-card": false, "available-limit": 300 }, violations: ['account-already-initialized']}
     ]
     state = authorize(state, operations)
-    expect(state.history).toStrictEqual(expected)
+    expect(state.operationsHistoric).toStrictEqual(expected)
   })
 
   it('Nao deve fazer uma transacao se o limite for excedido: `insufficient-limit`', () => {
@@ -60,7 +60,7 @@ describe('Transaction rules', () => {
     ]
 
     initialState = authorize(initialState, op)
-    expect(initialState.history).toStrictEqual(expected)
+    expect(initialState.operationsHistoric).toStrictEqual(expected)
   })
 
   it('Nao deve ter mais de 3 transacoes em menos de 2 minutos', () => {
@@ -91,7 +91,7 @@ describe('Transaction rules', () => {
     ]
 
     initialState = authorize(initialState, ops)
-    expect(initialState.history).toStrictEqual(expected)
+    expect(initialState.operationsHistoric).toStrictEqual(expected)
 
   })
 

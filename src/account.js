@@ -13,7 +13,7 @@ const registerAccount = (state, operation) => {
   }
 
   state.account = operation.account
-  state.history.push({
+  state.operationsHistoric.push({
     account: { ...state.account },
     violations
   })

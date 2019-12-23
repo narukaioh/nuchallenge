@@ -1,6 +1,6 @@
 module.exports = {
     account: {},
     operations: [],
-    history: [],
+    operationsHistoric: [],
     forbidden: []
 }

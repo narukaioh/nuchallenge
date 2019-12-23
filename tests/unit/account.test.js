@@ -9,7 +9,7 @@ describe('Account Create rules', () => {
   beforeEach(() => {
     initialState = {
       account: {},
-      history: []
+      operationsHistoric: []
     }
 
     operations = [
@@ -32,7 +32,7 @@ describe('Account Create rules', () => {
     ]
 
     initialState = authorize(initialState, operations)
-    expect(initialState.history).toStrictEqual(expected)
+    expect(initialState.operationsHistoric).toStrictEqual(expected)
   })
 
 })

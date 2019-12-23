@@ -43,7 +43,7 @@ const validTransaction = (state, operation) => {
   }
 
   state.account['available-limit'] -= operation.transaction.amount
-  state.history.push({
+  state.operationsHistoric.push({
     account: { ...state.account },
     violations: []
   })

@@ -1,5 +1,5 @@
 module.exports = {
     account: {},
-    history: [],
+    operationsHistoric: [],
     forbidden: []
 }

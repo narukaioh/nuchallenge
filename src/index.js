@@ -8,4 +8,4 @@ const file = process.argv[2]
 const string = readFileSync(file, "utf8")
 const operations = createOperationList(string)
 
-console.log(authorize(state, operations).history)
+console.log(authorize(state, operations).operationsHistoric)
