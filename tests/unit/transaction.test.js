@@ -2,7 +2,7 @@ const { authorize } = require('../../src/authorize')
 const { findDoubleTransaction } = require("../../src/transaction")
 const { findOperation } = require('../../src/utils')
 
-describe('Transaction rules', () => {
+describe('Transaction authorization rules', () => {
   let initialState;
   let operations;
 
@@ -21,7 +21,7 @@ describe('Transaction rules', () => {
 
   })
 
-  it('Nao deve aceitar a transacao se a conta nao foi inicializada: `account-not-initialized`', () => {
+  it('No transaction should be accepted without a properly initialized account: `account-not-initialized', () => {
     const expected = [
       { account: {}, violations: ['account-not-initialized']},
       { account: { "active-card": true, "available-limit": 100 }, violations: []}
@@ -30,7 +30,7 @@ describe('Transaction rules', () => {
     expect(initialState.operationsHistoric).toStrictEqual(expected)
   })
 
-  it('Nao deve aceitar a transacao se a conta nao estiver ativa: `card-not-active`', () => {
+  it('No transaction should be accepted when the card is not active: `card-not-active`', () => {
     
     let state = {
       account: { "active-card": false, "available-limit": 300 },
@@ -45,7 +45,7 @@ describe('Transaction rules', () => {
     expect(state.operationsHistoric).toStrictEqual(expected)
   })
 
-  it('Nao deve fazer uma transacao se o limite for excedido: `insufficient-limit`', () => {
+  it('The transaction amount should not exceed available limit: `insufficient-limit`', () => {
 
     const op = [
       { "account": {"active-card": true, "available-limit": 120 } },
@@ -63,7 +63,7 @@ describe('Transaction rules', () => {
     expect(initialState.operationsHistoric).toStrictEqual(expected)
   })
 
-  it('Nao deve ter mais de 3 transacoes em menos de 2 minutos', () => {
+  it('There should not be more than 3 transactions on a 2 minute interval: `high-frequency-small-interval`', () => {
     const ops = [
       { account: {"active-card": true, "available-limit": 120 }, violations: []},
       { "transaction": { "merchant": "a", "amount": 180, "time": "2019-02-13T10:01:36.000Z" } },
@@ -113,7 +113,7 @@ describe('Transaction rules', () => {
 
   })
 
-  it('Nao deve ter mais de uma transação do mesmo merchant e amount em menos de 2 minutos: `double-transaction`', () => {
+  it('There should not be more than 1 similar transactions (same amount and merchant) in a 2 minutes interval: `doubled-transaction`', () => {
     
     const ops = [
       { transaction: { "merchant": "a", "amount": 30, "time": "2019-02-13T10:01:36.000Z" } },
