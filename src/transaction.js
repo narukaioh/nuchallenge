@@ -16,7 +16,7 @@ const findDoubleTransaction = (operations, operation) => {
   return filtered.length > 1 ? true : false
 }
 
-const hasHighFrequency = (state, operation) => findOperation(state.forbidden, operation)
+const hasHighFrequency = (state, operation) => findOperation(state.transactionsGroupedTime, operation)
 
 const hasDoubleTransaction = (state, operation) => findDoubleTransaction(state.operations, operation)
 

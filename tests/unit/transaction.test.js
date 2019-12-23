@@ -1,4 +1,4 @@
-const { authorize, getForbiddenTransactions } = require('../../src/authorize')
+const { authorize } = require('../../src/authorize')
 const { findDoubleTransaction } = require("../../src/transaction")
 const { findOperation } = require('../../src/utils')
 
@@ -10,7 +10,7 @@ describe('Transaction rules', () => {
     initialState = {
       account: {},
       operationsHistoric: [],
-      forbidden: [],
+      transactionsGroupedTime: [],
       operations: []
     }
 
@@ -96,7 +96,7 @@ describe('Transaction rules', () => {
   })
 
   it('Deve encontrar uma transação dentro da lista de transações proibidas', () => {
-    initialState.forbidden = {
+    initialState.transactionsGroupedTime = {
       'Wed Feb 13 2019 08:03:35 GMT-0200 (Brasilia Summer Time)': [
         { transaction: { "merchant": "a", "amount": 180, "time": "2019-02-13T10:01:36.000Z" } },
         { transaction: { "merchant": "b", "amount": 180, "time": "2019-02-13T10:01:37.000Z" } },
@@ -107,7 +107,7 @@ describe('Transaction rules', () => {
 
     const operation = { transaction: { "merchant": "a", "amount": 180, "time": "2019-02-13T10:01:36.000Z" } }
 
-    const result = findOperation(initialState.forbidden, operation)
+    const result = findOperation(initialState.transactionsGroupedTime, operation)
 
     expect(result).toBe(true)
 

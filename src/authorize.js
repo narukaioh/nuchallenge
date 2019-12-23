@@ -6,13 +6,13 @@ const byDate = (a, b) => new Date(a.transaction.time) - new Date(b.transaction.t
 
 const getForbiddenTransactions = (state) => {
   const { operations } = state
-  if (isEmpty(state.forbidden)) {
+  if (isEmpty(state.transactionsGroupedTime)) {
     const sortedDate = operations
       .filter(operation => operation.transaction)
       .sort(byDate)
     let groupTime = null
 
-    state.forbidden = groupBy(sortedDate, operation => {
+    state.transactionsGroupedTime = groupBy(sortedDate, operation => {
       const time = new Date(operation.transaction.time)
       if (!groupTime) groupTime = new Date(time.getTime() + 2 * 60000)
       return time - groupTime <= 120000 ? groupTime : groupTime = time

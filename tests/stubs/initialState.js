@@ -1,5 +1,5 @@
 module.exports = {
     account: {},
     operationsHistoric: [],
-    forbidden: []
+    transactionsGroupedTime: []
 }
