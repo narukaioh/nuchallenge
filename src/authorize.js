@@ -1,28 +1,29 @@
 const { validTransaction } = require('./transaction')
 const { registerAccount } = require('./account')
-const { getOperation, groupBy } = require('./utils')
+const { getOperation, groupBy, isEmpty } = require('./utils')
 
 const byDate = (a, b) => new Date(a.transaction.time) - new Date(b.transaction.time)
 
-const transactionWithExceptions = (state, operations) => {
-  const newOperations = [...operations]
+const getForbiddenTransactions = (state) => {
+  const { operations } = state
+  if (isEmpty(state.forbidden)) {
+    const sortedDate = operations
+      .filter(operation => operation.transaction)
+      .sort(byDate)
+    let groupTime = null
 
-  const sortedDate = newOperations
-    .filter(operation => operation.transaction)
-    .sort(byDate)
+    state.forbidden = groupBy(sortedDate, operation => {
+      const time = new Date(operation.transaction.time)
+      if (!groupTime) groupTime = new Date(time.getTime() + 2 * 60000)
+      return time - groupTime <= 120000 ? groupTime : groupTime = time
+    })
+  }
 
-  let groupTime = null
-  state.forbidden = groupBy(sortedDate, operation => {
-    const time = new Date(operation.transaction.time)
-    if (!groupTime) groupTime = new Date(time.getTime() + 2 * 60000)
-    return time - groupTime <= 120000 ? groupTime : groupTime = time
-  });
-  
-  return state
+  return state 
 }
 
 const authorize = (state, operations) => {
-
+  state.operations = operations
   operations.forEach(operation => {
 
     switch (getOperation(operation)) {
@@ -31,7 +32,7 @@ const authorize = (state, operations) => {
         break;
       }
       case 'transaction': {
-        state = transactionWithExceptions(state, operations)
+        state = getForbiddenTransactions(state)
         state = validTransaction(state, operation)
         break;
       }
@@ -43,5 +44,5 @@ const authorize = (state, operations) => {
 
 module.exports = {
   authorize,
-  transactionWithExceptions
+  getForbiddenTransactions
 }

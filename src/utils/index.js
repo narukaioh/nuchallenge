@@ -5,7 +5,7 @@ const addViolation = (state, violationId) => {
   const violations = []
   violations.push(violationId)
   state.history.push({
-    account: state.account,
+    account: { ...state.account},
     violations
   })
 
@@ -37,7 +37,7 @@ const findOperation = (list, operation) => {
 
   for (key in list) {
     listKeyTime = new Date(key).getTime()
-    if (list[key].length > 3 && (listKeyTime - time) < 120000 && (listKeyTime - time) > 0) {
+    if (list[key].length > 3 && (listKeyTime - time) <= 120000 && (listKeyTime - time) > 0) {
       return true
     }
   }
