@@ -25,7 +25,7 @@ describe('Account Create rules', () => {
     expect(initialState.account).toStrictEqual(expected)
   })
 
-  it('Deve adicionar uma violação: account-already-initiliazated, quando já existir uma account no state', () => {
+  it('The account should not be updated or recreated: `account-already-initialized`', () => {
     const expected = [
       { "account": { "active-card": true, "available-limit": 100 }, violations: [] },
       { "account": { "active-card": true, "available-limit": 100 }, violations: ['account-already-initialized'] },
