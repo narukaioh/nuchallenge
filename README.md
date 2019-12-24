@@ -4,7 +4,7 @@
 ```
 Node : >= 13.3.0
 NPM  : >= 6.13.1
-````
+```
 
 # Run application
 ```
