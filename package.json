@@ -4,9 +4,9 @@
   "description": "Nubank Challenge",
   "main": "./src/index.js",
   "scripts": {
-    "test": "jest --verbose --coverage --watch",
+    "test": "jest --verbose --coverage",
     "start": "node src/index.js",
-    "test:debbuger": "node --inspect-brk node_modules/.bin/jest --runInBand"
+    "test:debugger": "node --inspect-brk node_modules/.bin/jest --runInBand"
   },
   "keywords": [
     "NU",

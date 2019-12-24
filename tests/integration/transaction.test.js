@@ -1,6 +1,4 @@
 const { authorize } = require('../../src/authorize')
-const { findDoubleTransaction } = require("../../src/transaction")
-const { findOperation } = require('../../src/utils')
 
 describe('Transaction authorization rules', () => {
   let initialState;
@@ -95,37 +93,24 @@ describe('Transaction authorization rules', () => {
 
   })
 
-  it('Deve encontrar uma transação dentro da lista de transações proibidas', () => {
-    initialState.transactionsGroupedTime = {
-      'Wed Feb 13 2019 08:03:35 GMT-0200 (Brasilia Summer Time)': [
-        { transaction: { "merchant": "a", "amount": 180, "time": "2019-02-13T10:01:36.000Z" } },
-        { transaction: { "merchant": "b", "amount": 180, "time": "2019-02-13T10:01:37.000Z" } },
-        { transaction: { "merchant": "c", "amount": 180, "time": "2019-02-13T10:01:38.000Z" } },
-        { transaction: { "merchant": "d", "amount": 180, "time": "2019-02-13T10:01:39.000Z" } },
-      ]
-    }
-
-    const operation = { transaction: { "merchant": "a", "amount": 180, "time": "2019-02-13T10:01:36.000Z" } }
-
-    const result = findOperation(initialState.transactionsGroupedTime, operation)
-
-    expect(result).toBe(true)
-
-  })
-
   it('There should not be more than 1 similar transactions (same amount and merchant) in a 2 minutes interval: `doubled-transaction`', () => {
     
     const ops = [
+      { account: {"active-card": true, "available-limit": 120 }, violations: []},
       { transaction: { "merchant": "a", "amount": 30, "time": "2019-02-13T10:01:36.000Z" } },
       { transaction: { "merchant": "a", "amount": 30, "time": "2019-02-13T10:01:37.000Z" } },
       { transaction: { "merchant": "a", "amount": 30, "time": "2019-02-13T10:05:37.000Z" } },
     ]
 
-    const operation = { transaction: { "merchant": "a", "amount": 30, "time": "2019-02-13T10:01:36.000Z" } }
+    const expected = [
+      { account: {"active-card": true, "available-limit": 120 }, violations: []},
+      { account: {"active-card": true, "available-limit": 120 }, violations: ['double-transaction']},
+      { account: {"active-card": true, "available-limit": 120 }, violations: ['double-transaction']},
+      { account: {"active-card": true, "available-limit": 90 }, violations: []}
+    ]
 
-    const result = findDoubleTransaction(ops, operation)
-    
-    expect(result).toBe(true)
+    initialState = authorize(initialState, ops)
+    expect(initialState.operationsHistoric).toStrictEqual(expected)
 
   })
 })

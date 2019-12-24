@@ -19,7 +19,7 @@ describe('Account Create rules', () => {
 
   })
 
-  it('Deve registrar uma conta adicionando no state', () => {
+  it('Should register an account by adding in state', () => {
     const expected = {'active-card': true, 'available-limit': 100 }
     initialState = authorize(initialState, operations)
     expect(initialState.account).toStrictEqual(expected)

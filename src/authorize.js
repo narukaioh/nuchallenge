@@ -1,26 +1,6 @@
-const { validTransaction } = require('./transaction')
+const { validTransaction, getForbiddenTransactions } = require('./transaction')
 const { registerAccount } = require('./account')
-const { getOperation, groupBy, isEmpty } = require('./utils')
-
-const byDate = (a, b) => new Date(a.transaction.time) - new Date(b.transaction.time)
-
-const getForbiddenTransactions = (state) => {
-  const { operations } = state
-  if (isEmpty(state.transactionsGroupedTime)) {
-    const sortedDate = operations
-      .filter(operation => operation.transaction)
-      .sort(byDate)
-    let groupTime = null
-
-    state.transactionsGroupedTime = groupBy(sortedDate, operation => {
-      const time = new Date(operation.transaction.time)
-      if (!groupTime) groupTime = new Date(time.getTime() + 2 * 60000)
-      return time - groupTime <= 120000 ? groupTime : groupTime = time
-    })
-  }
-
-  return state 
-}
+const { getOperation } = require('./utils')
 
 const authorize = (state, operations) => {
   state.operations = operations
