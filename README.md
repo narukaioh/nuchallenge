@@ -1,8 +1,10 @@
-# dockerizar a aplicacao
-# escrever uma pequena documentacao do que é necessário
-# escrever testes unitários e de integracao
-# criar um shell script para iniciar a aplicacao
-# passar a descricao dos testes pra ingles
+
+# Requirements
+
+```
+Node : >= 13.3.0
+NPM  : >= 6.13.1
+````
 
 # Run application
 ```
