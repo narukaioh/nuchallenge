@@ -1,4 +1,4 @@
-const { validTransaction, getForbiddenTransactions } = require('./transaction')
+const { validTransaction, getTransactionsGroupedTime } = require('./transaction')
 const { registerAccount } = require('./account')
 const { getOperation } = require('./utils')
 
@@ -12,7 +12,7 @@ const authorize = (state, operations) => {
         break;
       }
       case 'transaction': {
-        state = getForbiddenTransactions(state)
+        state = getTransactionsGroupedTime(state)
         state = validTransaction(state, operation)
         break;
       }
@@ -24,5 +24,5 @@ const authorize = (state, operations) => {
 
 module.exports = {
   authorize,
-  getForbiddenTransactions
+  getTransactionsGroupedTime
 }

@@ -5,7 +5,7 @@ const hasHighFrequency = (state, operation) => findOperation(state.transactionsG
 
 const hasDoubleTransaction = (state, operation) => findDoubleTransaction(state.operations, operation)
 
-const getForbiddenTransactions = (state) => {
+const getTransactionsGroupedTime = (state) => {
   const { operations } = state
   if (isEmpty(state.transactionsGroupedTime)) {
     const sortedDate = operations
@@ -56,5 +56,5 @@ const validTransaction = (state, operation) => {
 
 module.exports = {
   validTransaction,
-  getForbiddenTransactions
+  getTransactionsGroupedTime
 }
