@@ -56,6 +56,5 @@ const validTransaction = (state, operation) => {
 
 module.exports = {
   validTransaction,
-  findDoubleTransaction,
   getForbiddenTransactions
 }

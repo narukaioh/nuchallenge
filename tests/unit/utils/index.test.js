@@ -20,11 +20,61 @@ describe('Utils unit tests', () => {
     expect(result2).toBe(false)
   })
 
+  it('Should add a violation in state', () => {
+    let state = {
+      account: {},
+      operationsHistoric: []
+    }
+
+    const expected = {
+      account: {},
+      operationsHistoric: [
+        { account: {}, violations: ['violation-test']}
+      ]
+    }
+
+    state = addViolation(state, 'violation-test')
+    expect(state).toStrictEqual(expected)
+  })
+
+  it('Should return operation\'s type', () => {
+    const operations = [
+      { account: {} },
+      { transaction: {} },
+      { otherType: {}}
+    ]
+
+    const expected = ['account', 'transaction', 'otherType']
+    const result = operations.map(operation => getOperation(operation))
+    expect(result).toEqual(expected)
+  })
+
   it('Should return the diference of transaction\'s time', () => {
     const op1 = { transaction: { "merchant": "a", "amount": 180, "time": "2019-02-13T10:01:36.000Z" } }
     const op2 = { transaction: { "merchant": "b", "amount": 100, "time": "2019-02-13T10:01:37.000Z" } }
     const result = byDate(op1, op2)
     expect(result).toBe(-1000)
+  })
+
+  it('Should group lists by a defined pattern', () => {
+    const operations = [
+      { account: { limit: 100, active: true } },
+      { account: { limit: 30, active: true } },
+      { transaction: { merchant: 100, amount: 40 } }
+    ]
+    const expected = {
+      account: [
+        { account: { limit: 100, active: true } },
+        { account: { limit: 30, active: true } }
+      ],
+      transaction: [
+        { transaction: { merchant: 100, amount: 40 } }
+      ]
+    }
+    const result = groupBy(operations, op => {
+      return getOperation(op)
+    })
+    expect(result).toStrictEqual(expected)
   })
 
   it('Should transform string lines into JSON object list', () => {
@@ -47,6 +97,20 @@ describe('Utils unit tests', () => {
 
     const result = findOperation(transactionsGroupedTime, operation)
 
+    expect(result).toBe(true)
+
+  })
+
+  it('Should return true when finding a folded transaction within 2 minutes', () => {
+
+    const ops = [
+      { transaction: { "merchant": "a", "amount": 30, "time": "2019-02-13T10:01:36.000Z" } },
+      { transaction: { "merchant": "a", "amount": 30, "time": "2019-02-13T10:01:37.000Z" } },
+      { transaction: { "merchant": "a", "amount": 30, "time": "2019-02-13T10:05:37.000Z" } },
+    ]
+
+    const operation = { transaction: { "merchant": "a", "amount": 30, "time": "2019-02-13T10:01:36.000Z" } }
+    const result = findDoubleTransaction(ops, operation)
     expect(result).toBe(true)
 
   })
